@@ -4,8 +4,8 @@
 Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, and their fixes (see comments in code, `IS_SECURE` variable).  
 The app imitates a simple bank with customers, login page and money transfer functionality.
 
-## Setup (via terminal)
-1. Clone repository. Run interminal:
+## Setup
+1. Clone repository
 ```
 git clone https://github.com/jdeksnys/OWASP-top-ten-selected
 ```   
@@ -14,7 +14,7 @@ git clone https://github.com/jdeksnys/OWASP-top-ten-selected
 manage.py migrate
 ```   
 4. To setup application in unsecure mode (run with security flaws), set `IS_SECURE=False` in `settings.py`. Default value is `True`.   
-5. Start local server, run in terminal:
+5. Start local server
 ```
 manage.py runserver
 ```
