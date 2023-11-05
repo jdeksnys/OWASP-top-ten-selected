@@ -1,7 +1,8 @@
 # BankApp
 
 ## About
-Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, and their fixes.
+Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, and their fixes.  
+The app imitates a simple bank with customer, login page and money transfer functionality.
 
 ## Setup
 - To create + seed local database, in terminal run `manage.py migrate`  
