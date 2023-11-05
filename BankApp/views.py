@@ -14,7 +14,7 @@ if(settings.IS_SECURE):
 
 
 def errorView(request, exception):
-	logger.info(f"Attempted to access url {request.build_absolute_uri()}")
+	logger.info(f"Attempted to access invalid url {request.build_absolute_uri()}")
 	return render(request, "Views/error.html")
 
 
