@@ -1,6 +1,6 @@
 # BankApp
 
-## About BankApp
+## About
 Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, and their fixes.
 
 ## Setup
