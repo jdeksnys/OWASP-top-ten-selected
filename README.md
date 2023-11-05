@@ -1,7 +1,7 @@
 # OWASP-top-ten-selected
 
 ## About
-Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, as well as their fixes.
+Simple Django web app, showcasing 5 security flaws from the OWASP Top Ten 2021 list, and their fixes.
 
 ## Setup
 To create + seed local database, in terminal run `manage.py migrate`  
