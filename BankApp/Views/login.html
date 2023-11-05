@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head>
+    <title>Login to BankApp</title>
+</head>
+<script>
+    function Disable(){
+        var disabled = "{{ disabled }}";
+        var elements = document.getElementsByClassName("canDisable");
+        for(var element of elements){
+            if(disabled == "True"){
+                element.setAttribute("disabled", "true"); //not secure, for demonstration only (can be removed on client-sode)
+            }
+            else{
+                element.removeAttribute("disabled");
+            }
+        };
+    }
+</script>
+
+<style>
+    .canDisable{
+    }
+</style>
+
+<body onload="Disable()">
+    <h2>Login</h2>
+
+    <p>
+        {{disabled}}
+        {{message}}
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="socsecnumber">Social security number</label>
+        <input type="text" id="socsecnumber" required name="username" class="canDisable"><br><br>
+
+        <label for="password" id="password">Password</label>
+        <input type="password" id="password" required name="password" class="canDisable"><br>
+
+        <input type="submit" value="Login">
+    </form><br>
+
+    <a>No account?</a>
+    <input type="submit" value="Register" onclick="location.href = './register'">
+</body>

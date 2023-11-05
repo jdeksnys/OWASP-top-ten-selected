@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <title>Login to BankApp</title>
+</head>
+
+<script>
+    if('{{errorMsg}}' != null && '{{errorMsg}}' != '' && '{{errorMsg}}' != 'None'){
+        alert('{{errorMsg}}');
+    }
+
+
+    window.onload = function(){
+        if('{{message}}' != null && '{{message}}' != '' && '{{message}}' != 'None'){
+            elem = document.getElementById("msg");
+            //NOT SECURE:
+            elem.innerHTML = "{{message|safe}}";
+            //SECURE:
+            // elem.innerHTML = "{{message}}";
+        }
+    }
+</script>
+
+<body>
+    <h2>Hello, {{name}}</h2>
+
+    <form action='logout/' method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Logout"/>
+    </form>
+
+    <div>
+        <p>Balance: {{balance}}</p>
+    </div>
+
+    <div>
+        <p id="msg"></p>
+    </div>
+
+    <form action="makeTransfer/" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <span>From:</span><br/>
+        <select name="accountFromId">
+            <option disabled selected value>-- select --</option>
+            <option value="{{accountFrom.Id}}">{{accountFrom.Name}}</option> 
+        </select><br/>
+
+        <span>To:</span><br/>
+        <select name="accountToId">
+            <option disabled selected value>-- select --</option>
+            {% for account in accountsTo %}
+                <option value="{{account.Id}}">{{account.Name}}</option>
+            {% endfor %}
+        </select><br/>
+
+        <span>Amount:</span><br/>
+        <input type="text" name="amount"/><br/>
+
+        <span>Message:</span><br/>
+        <input type="text" name="message"/><br/>
+
+        <input type="submit" value="Transfer"/>
+    </form>
+
+</body>
