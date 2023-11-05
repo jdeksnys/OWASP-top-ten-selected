@@ -11,8 +11,8 @@ To start local server, run `manage.py runserver`.
 
 ## Testing
 App contains two customers for testing:
-1)  Social security number: 101
+1)  Social security number: 101  
     Password: squarepants
 
-2)  Social security number: 102
+2)  Social security number: 102  
     Password: redqueen
