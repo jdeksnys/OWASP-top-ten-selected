@@ -21,7 +21,7 @@ def GetCustomer(socSecNumber):
 def HandleFailedLogin(customer):
     if(customer != None):
         return IsTimeLocked(customer)
-    return {"usernameOk": False}
+    return {"usernameOk": False, "isTimeLocked":False, "timeDelay": None, "disabled": False}
 
 
 def SetFailedLoginCount(customer):

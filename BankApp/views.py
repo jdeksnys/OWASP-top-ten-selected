@@ -12,17 +12,17 @@ import logging
 if(settings.IS_SECURE):
 	logger = logging.getLogger("django")
 
-
 def errorView(request, exception):
 	logger.info(f"Attempted to access invalid url {request.build_absolute_uri()}")
 	return render(request, "Views/error.html")
 
-
 def LoginView(request):
 	if (request.method == "POST"):
-		socSecNumber = int(request.POST.get("username"))
-		_password = request.POST.get("password")
-
+		try:
+			socSecNumber = int(request.POST.get("username"))
+			_password = request.POST.get("password")
+		except:
+			return render(request, "Views/login.html", {"message": "Username or password incorrect"})
 		customer = GetCustomer(socSecNumber)
 		user = authenticate(request, SocSecNumber=socSecNumber, password=_password)
 		

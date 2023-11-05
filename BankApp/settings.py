@@ -111,8 +111,8 @@ IS_SECURE = True
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# SECURE IF NOT DEBUG, I.E. GENERIC 404 PAGES ENABLED
-DEBUG = False if IS_SECURE else True
+# SECURE IF NOT DEBUG, I.E. GENERIC 404 PAGES ENABLED ONLY IF DEBUG=FALSE
+DEBUG = False
 
 
 # SECURE IF USER LOGGED OUT ON BROWSER CLOSE:
@@ -164,7 +164,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+MEDIA_URL = "/media/"
+STATIC_URL = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
