@@ -53,3 +53,10 @@ class Permission(models.Model):
 class CustomerPermissions(models.Model):
     CustomerId = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False, to_field="Id")
     PermissionId = models.ForeignKey(Permission, on_delete=models.CASCADE, null=False, to_field="Id")
+
+
+class TransactionHistory(models.Model):
+    AccountFrom = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False, to_field="Id", related_name="transactionhistory_set_from")
+    AccountToName = models.CharField(max_length=20)
+    Amount = models.FloatField(null=False)    
+    Message = models.CharField(max_length=200)

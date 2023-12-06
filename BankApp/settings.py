@@ -107,7 +107,7 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.PBKDF2PasswordHasher"]
 AUTH_USER_MODEL = "BankApp.Customer"
 
 # global system setting
-IS_SECURE = True
+IS_SECURE = False
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

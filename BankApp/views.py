@@ -3,17 +3,19 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from BankApp.Services.authenticationService import HandleFailedLogin, GetCustomer, ResetFailedLoginCount, HasPermission
-from BankApp.models import Account
-from django.db import transaction
+from BankApp.models import Account, TransactionHistory
+from django.db import transaction, connection
 from django.conf import settings
 import logging
-
+import json
+import sqlite3
 
 if(settings.IS_SECURE):
 	logger = logging.getLogger("django")
 
 def errorView(request, exception):
-	logger.info(f"Attempted to access invalid url {request.build_absolute_uri()}")
+	if(settings.IS_SECURE):# SECURE IF LOGGING INVALID URLS
+		logger.info(f"Attempted to access invalid url {request.build_absolute_uri()}")
 	return render(request, "Views/error.html")
 
 def LoginView(request):
@@ -22,7 +24,7 @@ def LoginView(request):
 			socSecNumber = int(request.POST.get("username"))
 			_password = request.POST.get("password")
 		except:
-			return render(request, "Views/login.html", {"message": "Username or password incorrect"})
+			return render(request, "Views/login.html", {"message": ["Username or password incorrect"]})
 		customer = GetCustomer(socSecNumber)
 		user = authenticate(request, SocSecNumber=socSecNumber, password=_password)
 		
@@ -33,14 +35,14 @@ def LoginView(request):
 		else:
 			# NOT SECURE IF NO LOGIN RESTRICTIONS:
 			if(not settings.IS_SECURE):
-				return render(request, "Views/login.html", {"message": "Username or password incorrect"})
+				return render(request, "Views/login.html", {"message": json.dumps(["Username or password incorrect"])})
 			# SECURE IF SIGN IN ATTEMPTS LIMITED WITH EXPONENTIAL LOCK-TIME:
 			elif(settings.IS_SECURE):
 				result = HandleFailedLogin(customer)
 				if(result["usernameOk"]):
 					if(result["isTimeLocked"]):	
-						return render(request, "Views/login.html", {"message": f"Exceeded number of tries. Try again in {result['timeDelay']} seconds", "disabled": result["disabled"]})
-				return render(request, "Views/login.html", {"message": "Username or password incorrect", "disabled": result["disabled"]})
+						return render(request, "Views/login.html", {"message": [f"Exceeded number of tries. Try again in {result['timeDelay']} seconds"], "disabled": result["disabled"]})
+				return render(request, "Views/login.html", {"message": ["Username or password incorrect"], "disabled": result["disabled"]})
 
 	else:
 		return render(request, "Views/login.html")
@@ -102,67 +104,69 @@ def TransferView(request):
 	accToId = request.POST.get("accountToId")
 	message = request.POST.get("message")
 
-	# NOT SECURE: no account validation
-	# SECURE IF VALIDATION ADDED:
-	if(settings.IS_SECURE):
-		if(accFromId == None):
-			request.session['errorMsg'] = "Transaction failed. Sender account not selected."
-			return redirect("/");
-		if(accToId == None):
-			request.session['errorMsg'] = "Transaction failed. Receiver account not selected."
-			return redirect("/");
+	if(accFromId == None):
+		request.session['errorMsg'] = "Transaction failed. Sender account not selected."
+		return redirect("/");
+	if(accToId == None):
+		request.session['errorMsg'] = "Transaction failed. Receiver account not selected."
+		return redirect("/");
 	
 	accFromId = int(accFromId)
 	accToId = int(accToId)
-	accFrom = Account.objects.get(Id = accFromId)
-	accFromBalance = accFrom.Balance
-
+	amount_val = str(request.POST.get("amount"))
+	amount_val = amount_val.replace(",", ".")
 	try:
-		val = str(request.POST.get("amount"))
-		val = val.replace(",", ".")
-		amount = float(val)
+		amount = float(amount_val)
 	except Exception:
 		request.session['errorMsg'] = "Transaction failed. Invalid amount: please enter numeric value."
 		return redirect("/");
 
-	# NOT SECURE: no validation for amount, accFromId and accToId
-	# SECURE IF VALIDATION ADDED:
-	if(settings.IS_SECURE):
-		if(accFromId == accToId):
-			request.session['errorMsg'] = "Transaction failed. Cannot transfer to same account."
-			return redirect("/");
-		if(amount <= 0):
-			# SECURE IF LOGGING UNUSUAL REQUESTS
-			if(settings.IS_SECURE):
-				logger.warning(f"Customer {request.user.Id} transaction failed. Attempted negative transfer amount.")
-			request.session['errorMsg'] = "Transaction failed. Amount must be positive."
-			return redirect("/");
-		if(accFromBalance < amount):
-			# SECURE IF LOGGING UNUSUAL REQUESTS
-			if(settings.IS_SECURE):
-				logger.warning(f"Customer {request.user.Id} transaction failed. Insufficient funds.")
-			request.session['errorMsg'] = "Transaction failed. Insufficient funds."
-			return redirect("/");
+	accTo = Account.objects.get(Id = accToId)
+	accFrom = Account.objects.get(Id = accFromId)
+	accFromBalance = accFrom.Balance
+	
+	if(accFromId == accToId):
+		request.session['errorMsg'] = "Transaction failed. Cannot transfer to same account."
+		return redirect("/");
+	if(amount <= 0):
+		if(settings.IS_SECURE):# SECURE IF LOGGING UNUSUAL REQUESTS
+			logger.warning(f"Customer {request.user.Id} transaction failed. Attempted negative transfer amount.")
+		request.session['errorMsg'] = "Transaction failed. Amount must be positive."
+		return redirect("/");
+	if(accFromBalance < amount):
+		# SECURE IF LOGGING UNUSUAL REQUESTS
+		if(settings.IS_SECURE):
+			logger.warning(f"Customer {request.user.Id} transaction failed. Insufficient funds.")
+		request.session['errorMsg'] = "Transaction failed. Insufficient funds."
+		return redirect("/");
 
-
-
-	# NOT SECURE:
-	if(not settings.IS_SECURE):
-		accTo = Account.objects.get(Id = accToId)
+	with transaction.atomic():
 		accFrom.Balance -= amount
 		accTo.Balance += amount
 		accFrom.save()
 		accTo.save()
-	# SECURE IF WRAPPED IN TRANSACTION:
-	elif(settings.IS_SECURE):
-		with transaction.atomic():
-			accTo = Account.objects.get(Id = accToId)
-			accFrom.Balance -= amount
-			accTo.Balance += amount
-			accFrom.save()
-			accTo.save()
 
-	request.session['message'] = f"Last transaction: Transfered funds with message: {message}"
+
+	if(not settings.IS_SECURE):
+		# NOT SECURE, SQL INJECTION POSSIBLE, HACKER CAN CHANGE/DELETE ALL MESSAGES IN DATABASE OR EXECUTE OTHER QUERIES:
+		# EXAMPLE INJECTION (SQL):
+		# harmful_query_after_this_message'); UPDATE BankApp_transactionhistory SET Message = 'THIS GOT HACKED!!!';--
+		name = accTo.Name
+		name = name.replace("\"", "")
+		name = name.replace("'", "")
+		sql2 = f"INSERT INTO BankApp_transactionhistory (AccountFrom_id, AccountToName, Amount, Message) VALUES ({accFromId}, '{name}', {amount}, '{message}');"
+
+		conn = sqlite3.connect('BankAppDb.sqlite3')
+		c = conn.cursor()
+		c.executescript(sql2)
+	else:
+		# SECURE IF ORM USED (USES PARAMETRIZED QUERIES):
+		TransactionHistory.objects.create(AccountFrom_id=accFromId, AccountToName=accTo.Name, Amount=amount, Message=message)
+
+	transaction_history_logs = list(TransactionHistory.objects.filter(AccountFrom_id=accFromId).order_by('-id').values_list('AccountFrom_id', 'AccountToName', 'Amount', 'Message'))
+	messages = [f"Transferred {log[2]}EUR to {log[1]} with message: {log[3]}" for log in transaction_history_logs]
+
+	request.session['message'] = json.dumps(messages)
 	if(settings.IS_SECURE):
 		logger.info(f"Customer {request.user.Id} made transaction.")
 

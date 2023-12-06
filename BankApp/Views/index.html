@@ -11,11 +11,14 @@
 
     window.onload = function(){
         if('{{message}}' != null && '{{message}}' != '' && '{{message}}' != 'None'){
+            var message = JSON.parse('{{message}}'.replace(/&quot;/g,'"'));
             elem = document.getElementById("msg");
-            //NOT SECURE:
-            elem.innerHTML = "{{message|safe}}";
-            //SECURE:
-            // elem.innerHTML = "{{message}}";
+            
+            (message).forEach(msg => {
+                var li = document.createElement("li");
+                li.innerHTML = msg;
+                elem.appendChild(li);
+            });
         }
     }
 </script>
