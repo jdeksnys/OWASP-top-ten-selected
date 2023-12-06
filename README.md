@@ -148,14 +148,14 @@ HOW TO FIX:
 
 
 REFERENCES
-[1] Common Weakness Enumeration. CWE-1216 Lockout Mechanism Errors. https://cwe.mitre.org/data/definitions/1216.html
-[2] Common Weakness Enumeration. CWE-756: Missing Custom Error Page. https://cwe.mitre.org/data/definitions/756.html
-[3] Common Weakness Enumeration. CWE-20: Improper Input Validation. https://cwe.mitre.org/data/definitions/20.html
+[1] Common Weakness Enumeration. CWE-1216 Lockout Mechanism Errors. https://cwe.mitre.org/data/definitions/1216.html  
+[2] Common Weakness Enumeration. CWE-756: Missing Custom Error Page. https://cwe.mitre.org/data/definitions/756.html  
+[3] Common Weakness Enumeration. CWE-20: Improper Input Validation. https://cwe.mitre.org/data/definitions/20.html  
 [4] Common Weakness Enumeration. CWE-87: Improper Neutralization of Alternate XSS Syntax. https://cwe.mitre.org/data/definitions/87.html
-[5] Common Weakness Enumeration. CWE-74: Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection'). https://cwe.mitre.org/data/definitions/74.html
-[6] Common Weakness Enumeration. CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting'). https://cwe.mitre.org/data/definitions/79.html
-[7] Common Weak Enumeration. CWE-80: Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS). https://cwe.mitre.org/data/definitions/80.html
-[8] Common Weak Enumeration. CWE-285: Improper Authorization. https://cwe.mitre.org/data/definitions/285.html
-[9] Common Weak Enumeration. CWE-778: Insufficient Logging. https://cwe.mitre.org/data/definitions/778.html
-[10] Common Weak Enumeration. CWE-223: Omission of Security-relevant Information. https://cwe.mitre.org/data/definitions/223.html
-[11] Django. Security in Django. https://docs.djangoproject.com/en/4.2/topics/security/
+[5] Common Weakness Enumeration. CWE-74: Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection'). https://cwe.mitre.org/data/definitions/74.html  
+[6] Common Weakness Enumeration. CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting'). https://cwe.mitre.org/data/definitions/79.html  
+[7] Common Weak Enumeration. CWE-80: Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS). https://cwe.mitre.org/data/definitions/80.html  
+[8] Common Weak Enumeration. CWE-285: Improper Authorization. https://cwe.mitre.org/data/definitions/285.html  
+[9] Common Weak Enumeration. CWE-778: Insufficient Logging. https://cwe.mitre.org/data/definitions/778.html  
+[10] Common Weak Enumeration. CWE-223: Omission of Security-relevant Information. https://cwe.mitre.org/data/definitions/223.html  
+[11] Django. Security in Django. https://docs.djangoproject.com/en/4.2/topics/security/  
