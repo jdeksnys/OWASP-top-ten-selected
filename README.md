@@ -38,7 +38,7 @@ FRAMEWORK: Django
 
 
 
-FLAW 1: Identification and Authentication Failures
+### FLAW 1: Identification and Authentication Failures
 
 SPECIFIC ISSUES:
 	CWE-1216 Lockout Mechanism Errors [1]: allowing unlimited sign in attempts and lack of exponentially increasing sign-in lock time after number of tries exceeded, Session fixation: not logging out on browser close.
@@ -60,7 +60,7 @@ HOW TO FIX:
 
 
 
-FLAW 2: A01:2021 – Broken Access Control
+### FLAW 2: A01:2021 – Broken Access Control
 
 SPECIFIC ISSUE:
 	CWE-285: Improper Authorization [8]
@@ -78,7 +78,7 @@ HOW TO FIX:
 
 
 
-FLAW 3: A03:2021 – Injection
+### FLAW 3: A03:2021 – Injection
 
 SPECIFIC ISSUES:
 	CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
@@ -101,7 +101,7 @@ HOW TO FIX:
 
 
 
-FLAW 4: A09:2021 – Security Logging and Monitoring Failures
+### FLAW 4: A09:2021 – Security Logging and Monitoring Failures
 
 SPECIFIC ISSUES:
 	CWE-778: Insufficient Logging [9], CWE-223: Omission of Security-relevant Information [10]
@@ -127,7 +127,7 @@ HOW TO FIX:
 
 
 
-FLAW 5: A05:2021 – Security Misconfiguration
+### FLAW 5: A05:2021 – Security Misconfiguration
 
 SPECIFIC ISSUE:
 	CWE-756 Missing Custom Error Page [2]
